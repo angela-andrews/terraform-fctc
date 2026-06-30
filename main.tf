@@ -24,13 +24,13 @@ resource "aws_launch_template" "example" {
 }
 
 resource "aws_security_group" "instance" {
-  name = "terraform-example-instance"
+  name = var.instance_security_group_name
 
   ingress {
     from_port   = var.server_port
     to_port     = var.server_port
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    security_groups = [aws_security_group.alb.id]
   }
 }
 
@@ -44,7 +44,10 @@ resource "aws_autoscaling_group" "example" {
   min_size = 2
   max_size = 10
 
-  launch_template  {
+  target_group_arns = [aws_lb_target_group.asg.arn]
+  health_check_type = "ELB"
+
+  launch_template {
     id      = aws_launch_template.example.id
     version = aws_launch_template.example.latest_version
   }
@@ -56,11 +59,7 @@ resource "aws_autoscaling_group" "example" {
   }
 }
 
-variable "server_port" {
-  description = "The port the server will use for http requests"
-  type        = number
-  default     = 8080
-}
+# moved server_port variable to variables.tf 
 
 data "aws_vpc" "default" {
   default = true
@@ -75,7 +74,7 @@ data "aws_subnets" "default" {
 
 resource "aws_lb" "example" {
 
-  name               = var.alb_name
+  name = var.alb_name
 
   load_balancer_type = "application"
   subnets            = data.aws_subnets.default.ids
