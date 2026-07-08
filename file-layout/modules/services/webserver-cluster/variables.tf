@@ -21,3 +21,36 @@ variable "alb_security_group_name" {
   type        = string
   default     = "terraform-example-alb"
 }
+
+variable "cluster_name" {
+  description = "The name to use for all cluster resources"
+  type        = string
+}
+
+variable "db_remote_state_bucket"{
+  description = "The name of the S3 bucket for the database's remote state"
+  type        = string
+}
+
+variable "db_remote_state_key"{
+  description = "The path for the database's remote state in S3"
+  type        = string
+}
+
+variable "instance_type" {
+  description = "The type of EC2 Instance to use (eg. t2.micro)"
+  type        = string
+  default     = "t2.micro"
+}
+
+variable "min_size" {
+  description = "The minimum number of instances in the ASG"
+  type        = number
+  default     = 2
+}
+
+variable "max_size" {
+  description = "The maximum number of instances in the ASG"
+  type        = number
+  default     = 10
+}

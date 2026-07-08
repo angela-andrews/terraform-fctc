@@ -6,7 +6,7 @@
 resource "aws_launch_template" "example" {
   name_prefix            = "example-"
   image_id               = "ami-0fb653ca2d3203ac1"
-  instance_type          = "t2.micro"
+  instance_type          = var.instance_type
   vpc_security_group_ids = [aws_security_group.instance.id]
 
   user_data = base64encode(templatefile("${path.module}/user-data.sh", {
@@ -23,7 +23,8 @@ resource "aws_launch_template" "example" {
 }
 
 resource "aws_security_group" "instance" {
-  name = var.instance_security_group_name
+  name = "${var.cluster_name}-instance"
+  # commenting out hard-coded name to use variable instead
 
   ingress {
     from_port   = var.server_port
@@ -38,8 +39,8 @@ resource "aws_autoscaling_group" "example" {
 
   vpc_zone_identifier = data.aws_subnets.default.ids
 
-  min_size = 2
-  max_size = 10
+  min_size = var.min_size
+  max_size = var.max_size
 
   target_group_arns = [aws_lb_target_group.asg.arn]
   health_check_type = "ELB"
@@ -51,7 +52,7 @@ resource "aws_autoscaling_group" "example" {
 
   tag {
     key                 = "Name"
-    value               = "terraform-asg-example"
+    value               = "${var.cluster_name}-asg"
     propagate_at_launch = true
   }
 }
@@ -69,7 +70,7 @@ data "aws_subnets" "default" {
 
 resource "aws_lb" "example" {
 
-  name = var.alb_name
+  name = "${var.cluster_name}-alb"
 
   load_balancer_type = "application"
   subnets            = data.aws_subnets.default.ids
@@ -129,8 +130,9 @@ resource "aws_lb_listener_rule" "asg" {
 }
 
 resource "aws_security_group" "alb" {
-
-  name = var.alb_security_group_name
+  name = "${var.cluster_name}-alb"
+  # commenting out hard-coded name to use variable instead
+  #name = var.alb_security_group_name
 
   # Allow inbound HTTP requests
   ingress {
@@ -154,8 +156,10 @@ data "terraform_remote_state" "db" {
   backend = "s3"
 
   config = {
-    bucket = "fctc-state-chapter3"
-    key    = "stage/data-stores/mysql/terraform.tfstate"
+    #bucket = "fctc-state-chapter3"
+    #key    = "stage/data-stores/mysql/terraform.tfstate"
+    bucket = "var.db_remote_state_bucket"
+    key   = "var.db_remote_state_key"
     region = "us-east-2"
   }
 }
