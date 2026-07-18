@@ -2,3 +2,14 @@
 *.tfstate
 *.tfstate.backup
 testing/
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+*.tfplan
+*.tfvars
+*.tfvars.json
+!*.tfvars.example
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

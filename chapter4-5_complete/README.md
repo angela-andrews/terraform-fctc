@@ -20,9 +20,9 @@ modules/
 
 ## Apply order
 
-1. `live/global/s3`
-2. Copy `live/global/s3/backend.tf.example` to `backend.tf`, then run `terraform init -migrate-state`
-3. `live/global/iam`
+1. `live/global/s3`✅
+2. Copy `live/global/s3/backend.tf.example` to `backend.tf`, then run `terraform init -migrate-state` 🚫
+3. `live/global/iam` ✅
 4. `live/stage/data-stores/mysql`
 5. `live/stage/services/webserver-cluster`
 6. `live/prod/data-stores/mysql`

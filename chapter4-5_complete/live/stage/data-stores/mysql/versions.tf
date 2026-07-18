@@ -12,7 +12,7 @@ terraform {
   }
 
   backend "s3" {
-    bucket       = "fctc-state-chapter3"
+    bucket       = "fctc-state"
     key          = "stage/data-stores/mysql/terraform.tfstate"
     region       = "us-east-2"
     encrypt      = true
