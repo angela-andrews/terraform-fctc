@@ -1,5 +1,5 @@
-# File location: live/prod/data-stores/mysql/versions.tf
-# Purpose: Terraform, provider, and backend requirements for prod MySQL.
+# File location: live/global/iam/versions.tf
+# Purpose: Terraform, AWS provider, and backend requirements for global IAM.
 
 terraform {
   required_version = ">= 1.10.0, < 2.0.0"
@@ -13,7 +13,7 @@ terraform {
 
   backend "s3" {
     bucket       = "fctc-state"
-    key          = "prod/data-stores/mysql/terraform.tfstate"
+    key          = "global/iam/terraform.tfstate"
     region       = "us-east-2"
     encrypt      = true
     use_lockfile = true
