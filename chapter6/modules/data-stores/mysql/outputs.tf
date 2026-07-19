@@ -1,24 +1,24 @@
-# File location: modules/data-stores/mysql/outputs.tf
-# Purpose: Values exposed by the reusable MySQL module.
+# File location: live/stage/data-stores/mysql/outputs.tf
+# Purpose: Export database values consumed by the stage web cluster.
 
 output "address" {
   description = "RDS endpoint hostname."
-  value       = aws_db_instance.this.address
+  value       = module.mysql.address
 }
 output "port" {
   description = "RDS listener port."
-  value       = aws_db_instance.this.port
+  value       = module.mysql.port
 }
 output "database_name" {
   description = "Initial database name."
-  value       = aws_db_instance.this.db_name
+  value       = module.mysql.database_name
 }
 output "database_security_group_id" {
   description = "RDS security group ID."
-  value       = aws_security_group.database.id
+  value       = module.mysql.database_security_group_id
 }
 
 output "db_credentials_secret_id" {
-  description = "Name of the Secrets Manager secret used for the database credentials."
-  value       = var.db_credentials_secret_id
+  description = "Secrets Manager secret used by the stage database."
+  value       = module.mysql.db_credentials_secret_id
 }

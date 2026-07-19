@@ -1,0 +1,6 @@
+# File location: live/stage/data-stores/mysql/terraform.tfvars.example
+# Purpose: Example secret input. Copy to terraform.tfvars and do not commit it.
+db_password = "REPLACE_WITH_A_STRONG_PASSWORD"
+
+Better to use an environment variable with the database db_password
+

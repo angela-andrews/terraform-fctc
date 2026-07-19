@@ -1,98 +1,41 @@
-# File location: modules/data-stores/mysql/main.tf
-# Purpose: Reusable module for a private Amazon RDS MySQL database.
+# File location: live/stage/data-stores/mysql/main.tf
+# Purpose: Deploy the stage MySQL data store using the reusable module.
 
-# Retrieve the current version of the Secrets Manager secret.
-#
-# The secret must contain JSON in this format:
-# {
-#   "username": "database_admin",
-#   "password": "strong-database-password"
-# }
-data "aws_secretsmanager_secret_version" "db_credentials" {
-  secret_id = var.db_credentials_secret_id
-}
+provider "aws" {
+  region = var.aws_region
 
-# Decode the JSON secret into a Terraform object.
-#
-# The individual values are referenced as:
-# local.db_credentials.username
-# local.db_credentials.password
-locals {
-  db_credentials = jsondecode(
-    data.aws_secretsmanager_secret_version.db_credentials.secret_string
-  )
-}
-
-resource "aws_db_subnet_group" "this" {
-  name       = "${var.name_prefix}-db-subnet-group"
-  subnet_ids = var.subnet_ids
-
-  tags = {
-    Name = "${var.name_prefix}-db-subnet-group"
+  default_tags {
+    tags = var.common_tags
   }
 }
 
-resource "aws_security_group" "database" {
-  name        = "${var.name_prefix}-database-sg"
-  description = "Allow MySQL traffic from the configured application CIDR."
-  vpc_id      = var.vpc_id
+data "aws_vpc" "default" {
+  default = true
+}
 
-  ingress {
-    description = "MySQL from application VPC"
-    from_port   = var.db_port
-    to_port     = var.db_port
-    protocol    = "tcp"
-    cidr_blocks = [var.allowed_cidr_block]
-  }
-
-  egress {
-    description = "Allow outbound traffic"
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  tags = {
-    Name = "${var.name_prefix}-database-sg"
+data "aws_subnets" "default" {
+  filter {
+    name   = "vpc-id"
+    values = [data.aws_vpc.default.id]
   }
 }
 
-resource "aws_db_instance" "this" {
-  identifier = "${var.name_prefix}-mysql"
+module "mysql" {
+  source = "../../../../modules/data-stores/mysql"
 
-  engine         = "mysql"
-  engine_version = var.engine_version
-  instance_class = var.instance_class
-
-  allocated_storage     = var.allocated_storage
-  max_allocated_storage = var.max_allocated_storage
-  storage_type          = "gp3"
-  storage_encrypted     = true
+  name_prefix        = "stage"
+  vpc_id             = data.aws_vpc.default.id
+  subnet_ids         = data.aws_subnets.default.ids
+  allowed_cidr_block = data.aws_vpc.default.cidr_block
 
   db_name = var.db_name
 
-  # Retrieve the master credentials from AWS Secrets Manager.
-  username = local.db_credentials.username
-  password = local.db_credentials.password
+  # The reusable module retrieves the database username and password
+  # from this AWS Secrets Manager secret.
+  db_credentials_secret_id = "stage/db-creds"
 
-  port = var.db_port
-
-  db_subnet_group_name   = aws_db_subnet_group.this.name
-  vpc_security_group_ids = [aws_security_group.database.id]
-  publicly_accessible    = false
-
-  backup_retention_period = var.backup_retention_period
-  deletion_protection     = var.deletion_protection
-  skip_final_snapshot     = var.skip_final_snapshot
-
-  final_snapshot_identifier = (
-    var.skip_final_snapshot
-    ? null
-    : "${var.name_prefix}-mysql-final"
-  )
-
-  tags = {
-    Name = "${var.name_prefix}-mysql"
-  }
+  instance_class      = var.instance_class
+  deletion_protection = var.deletion_protection
+  skip_final_snapshot = var.skip_final_snapshot
 }
+
