@@ -19,6 +19,6 @@ output "database_security_group_id" {
 }
 
 output "db_credentials_secret_id" {
-  description = "Name or ARN of the Secrets Manager secret used for the database credentials."
+  description = "Name of the Secrets Manager secret used for the database credentials."
   value       = var.db_credentials_secret_id
 }
