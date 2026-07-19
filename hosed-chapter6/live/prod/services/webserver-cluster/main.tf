@@ -43,12 +43,9 @@ module "webserver_cluster" {
   desired_capacity = var.desired_capacity
 
 
-# comment out so I CAN destroy
-  #db_address = data.terraform_remote_state.mysql.outputs.address
-  #db_port    = data.terraform_remote_state.mysql.outputs.port
-  
-  db_address = "database-destroyed.invalid"
-  db_port = 3306
+
+  db_address = data.terraform_remote_state.mysql.outputs.address
+  db_port    = data.terraform_remote_state.mysql.outputs.port
 
 
 }

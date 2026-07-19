@@ -1,5 +1,5 @@
-# File location: live/prod/services/webserver-cluster/main.tf
-# Purpose: Deploy the prod webserver cluster using the reusable module.
+# File location: live/stage/services/webserver-cluster/main.tf
+# Purpose: Deploy the stage webserver cluster using the reusable module.
 
 provider "aws" {
   region = var.aws_region
@@ -23,7 +23,7 @@ data "terraform_remote_state" "mysql" {
   backend = "s3"
   config = {
     bucket = "fctc-state"
-    key    = "prod/data-stores/mysql/terraform.tfstate"
+    key    = "stage/data-stores/mysql/terraform.tfstate"
     region = "us-east-2"
   }
 }
@@ -31,7 +31,7 @@ data "terraform_remote_state" "mysql" {
 module "webserver_cluster" {
   source = "../../../../modules/services/webserver-cluster"
 
-  cluster_name = "prod-webserver-cluster"
+  cluster_name = "stage-webserver-cluster"
   vpc_id       = data.aws_vpc.default.id
   subnet_ids   = data.aws_subnets.default.ids
 
@@ -43,13 +43,10 @@ module "webserver_cluster" {
   desired_capacity = var.desired_capacity
 
 
-# comment out so I CAN destroy
-  #db_address = data.terraform_remote_state.mysql.outputs.address
-  #db_port    = data.terraform_remote_state.mysql.outputs.port
-  
-  db_address = "database-destroyed.invalid"
-  db_port = 3306
+  db_address = data.terraform_remote_state.mysql.outputs.address
+  db_port    = data.terraform_remote_state.mysql.outputs.port
+
+
 
 
 }
-  

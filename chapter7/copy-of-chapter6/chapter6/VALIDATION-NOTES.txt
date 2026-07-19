@@ -1,0 +1,5 @@
+# File location: VALIDATION-NOTES.txt
+# Purpose: Build-time validation record.
+
+All active .tf files parsed successfully with python-hcl2.
+AWS-aware terraform init/validate/plan must be run locally because provider installation and AWS credentials are not available in this build environment.
