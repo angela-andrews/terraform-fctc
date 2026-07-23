@@ -1,0 +1,59 @@
+.
+├── FILE-MANIFEST.txt
+├── live
+│   ├── global
+│   │   ├── iam
+│   │   │   ├── main.tf
+│   │   │   ├── outputs.tf
+│   │   │   ├── variables.tf
+│   │   │   └── versions.tf
+│   │   └── s3
+│   │       ├── backend.tf.example
+│   │       ├── main.tf
+│   │       ├── outputs.tf
+│   │       └── variables.tf
+│   ├── prod
+│   │   ├── data-stores
+│   │   │   └── mysql
+│   │   │       ├── main.tf
+│   │   │       ├── outputs.tf
+│   │   │       ├── terraform.tfvars.example
+│   │   │       ├── variables.tf
+│   │   │       └── versions.tf
+│   │   └── services
+│   │       └── webserver-cluster
+│   │           ├── main.tf
+│   │           ├── outputs.tf
+│   │           ├── variables.tf
+│   │           └── versions.tf
+│   └── stage
+│       ├── data-stores
+│       │   └── mysql
+│       │       ├── main.tf
+│       │       ├── outputs.tf
+│       │       ├── terraform.tfvars.example
+│       │       ├── variables.tf
+│       │       └── versions.tf
+│       └── services
+│           └── webserver-cluster
+│               ├── main.tf
+│               ├── outputs.tf
+│               ├── variables.tf
+│               └── versions.tf
+├── modules
+│   ├── data-stores
+│   │   └── mysql
+│   │       ├── main.tf
+│   │       ├── outputs.tf
+│   │       └── variables.tf
+│   └── services
+│       └── webserver-cluster
+│           ├── main.tf
+│           ├── outputs.tf
+│           ├── user-data.sh
+│           └── variables.tf
+├── README.md
+├── terraform-tree.txt
+└── VALIDATION-NOTES.txt
+
+20 directories, 37 files

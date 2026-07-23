@@ -1,0 +1,13 @@
+# File location: live/global/s3/backend.tf.example
+# Purpose: Enable the S3 backend after the bucket has been created.
+# Copy this file to backend.tf and run: terraform init -migrate-state
+
+terraform {
+  backend "s3" {
+    bucket       = "fctc-state-chapter3"
+    key          = "global/s3/terraform.tfstate"
+    region       = "us-east-2"
+    encrypt      = true
+    use_lockfile = true
+  }
+}
